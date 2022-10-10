@@ -12,13 +12,25 @@ def burn_approval():
         Txn.asset_close_to() == Global.zero_address()
     )
 
+    assetID = Btoi(Txn.application_args[0])
     handle_creation = Seq([
         Assert(basic_checks),
+        App.globalPut(Bytes("assetID"), assetID),
+        App.globalPut(Bytes("optedIN"), Int(0)),
         Return(Int(1))
     ])
 
+    senderAssetBalance = AssetHolding.balance(Global.current_application_address(), App.globalGet(Bytes("assetID")))
+    amount = Seq(
+        senderAssetBalance,
+        Assert(senderAssetBalance.hasValue()),
+        senderAssetBalance.value()
+    )
     optin_asset_burn=Seq([
         Assert(basic_checks),
+        Assert(App.globalGet(Bytes("assetID"))==Txn.assets[0]),
+        Assert(Txn.sender() == Global.creator_address()),
+        Assert(App.globalGet(Bytes("optedIN"))==Int(0)), #if th global state of optedIn = 0 he will do the optin else he will not like a boolean (0 or 1 )!!
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.AssetTransfer,
@@ -27,6 +39,7 @@ def burn_approval():
         TxnField.xfer_asset: Txn.assets[0], # Must be in the assets array sent as part of the application call
         }),
         InnerTxnBuilder.Submit(),
+        App.globalPut(Bytes("optedIN"), Int(1)),
         Return(Int(1))
     ])
 

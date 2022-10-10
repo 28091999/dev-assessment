@@ -4,14 +4,14 @@ const { Runtime, AccountStore, ERRORS } = require("@algo-builder/runtime");
 const algosdk = require("algosdk");
 const { convert } = require("@algo-builder/algob");
 
-const approvalFileMint = "mint_approval.py";
-const clearStateFileMint = "mint_clearstate.py";
+const mintApprovalFile = "mint_approval.py";
+const mintClearStateFile = "mint_clearstate.py";
 
-const approvalFileHolding = "holdings_approval.py";
-const clearStateFileHolding = "holdings_clearstate.py";
+const holdingApprovalFile = "holdings_approval.py";
+const holdingClearStateFile = "holdings_clearstate.py";
 
-const approvalFileBurn = "burn_approval.py";
-const clearStateFileBurn = "burn_clearstate.py";
+const burnApprovalFile = "burn_approval.py";
+const burnclearStateFile = "burn_clearstate.py";
 
 const RUNTIME_ERR1009 = 'RUNTIME_ERR1009: TEAL runtime encountered err opcode'; 
 
@@ -20,13 +20,13 @@ describe("Negative Tests", function () {
     let master;
     let runtime;
     let appInfoMint;
-    let user;
+    let acc1;
 
     // do this before each test
     this.beforeEach(async function () {
-        master = new AccountStore(1e9); //1000 Algos
-        user = new AccountStore(1e9);
-        runtime = new Runtime([master,user]);
+        master = new AccountStore(100e6); //100 Algos
+        acc1 = new AccountStore(600e6); //100 Algos
+        runtime = new Runtime([master,acc1]);
     });
 
     const initContract = (runtime, creatorAccount, approvalFile, clearStateFile, locInts, locBytes, gloInts, gloBytes, args) => {
@@ -44,10 +44,10 @@ describe("Negative Tests", function () {
             },
             { totalFee: 1000 }, //pay flags
         );
-
+    
         const appInfo = runtime.getAppInfoFromName(approvalFile, clearStateFile);
         const appAddress = appInfo.applicationAccount;  
-
+    
         // fund the contract
         runtime.executeTx({
             type: types.TransactionType.TransferAlgo,
@@ -57,83 +57,104 @@ describe("Negative Tests", function () {
             amountMicroAlgos: 2e7, //20 algos
             payFlags: { totalFee: 1000 },
         });
-
+    
         return appInfo;
     };
-
-    const initMint = () => {
+    
+    
+    
+    const initMint = (runtime,master) => {
         return initContract(
             runtime, 
-            master.account, 
-            approvalFileMint, 
-            clearStateFileMint,
+            master, 
+            mintApprovalFile, 
+            mintClearStateFile,
+            0,
+            0,
+            1,
+            2,
+            []
+        );
+    };
+    
+    
+    const createAsset = (runtime,master,appID) => {
+    
+        //create asset
+        const createAsset = ["create_asset"].map(convert.stringToBytes);
+        runtime.executeTx({
+            type: types.TransactionType.CallApp,
+            sign: types.SignType.SecretKey,
+            fromAccount: master,
+            appID: appID,
+            payFlags: { totalFee: 1000 },
+            appArgs: createAsset,
+        });
+    
+        //get asset ID
+        const getGlobal = (appID, key) => runtime.getGlobalState(appID, key);
+        const assetID = Number(getGlobal(appID, "teslaid"));
+    
+        return assetID;
+    }
+    
+    
+    const initBurn = (runtime,master,assetID) => {
+        return initContract(
+            runtime, 
+            master, 
+            burnApprovalFile, 
+            burnclearStateFile,
             0,
             0,
             1,
             0,
-            []
+            [convert.uint64ToBigEndian(assetID)]
         );
     };
-
-
-    const initBurn = () => {
+    
+    const initHolding = (runtime,master,assetID) => {
         return initContract(
             runtime, 
-            master.account, 
-            approvalFileBurn, 
-            clearStateFileBurn,
-            0,
-            0,
-            0,
-            0,
-            []
-        );
-    };
-
-    const initHolding = (ID) => {
-        return initContract(
-            runtime, 
-            master.account, 
-            approvalFileHolding, 
-            clearStateFileHolding,
+            master, 
+            holdingApprovalFile, 
+            holdingClearStateFile,
             0,
             0,
             2,
             0,
-            [convert.uint64ToBigEndian(ID)]
+            [convert.uint64ToBigEndian(assetID)]
         );
     };
-
-    const optInBurn = (runtime, account, appID, asset) => {
-        const optinAssetBurn = ["optin_asset_burn"].map(convert.stringToBytes);
+    
+    const optIn = (runtime, account, appID, assetID) => {
+        const optinAsset = ["optin_asset"].map(convert.stringToBytes);
         runtime.executeTx({
             type: types.TransactionType.CallApp,
             sign: types.SignType.SecretKey,
             fromAccount: account,
             appID: appID,
             payFlags: { totalFee: 1000 },
-            foreignAssets: [asset],
-            appArgs: optinAssetBurn,
-        });
-    };
-
-    const optInHolding = (runtime, account, appID, asset) => {
-        const optinAssetHolding = ["optin_asset"].map(convert.stringToBytes);
-        runtime.executeTx({
-            type: types.TransactionType.CallApp,
-            sign: types.SignType.SecretKey,
-            fromAccount: account,
-            appID: appID,
-            payFlags: { totalFee: 1000 },
-            foreignAssets: [asset],
-            appArgs: optinAssetHolding,
+            foreignAssets: [assetID],
+            appArgs: optinAsset,
         });
     };
     
+    const optInBurn = (runtime, account, appID, assetID) => {
+        const optinAsset = ["optin_asset_burn"].map(convert.stringToBytes);
+        runtime.executeTx({
+            type: types.TransactionType.CallApp,
+            sign: types.SignType.SecretKey,
+            fromAccount: account,
+            appID: appID,
+            payFlags: { totalFee: 1000 },
+            foreignAssets: [assetID],
+            appArgs: optinAsset,
+        });
+    };
 
-    const amountToSendBurn = 1000000000;
-    const Testburn = (runtime, account, appID, appAccount, assets) => {
-        const burn = [convert.stringToBytes("burn"),convert.uint64ToBigEndian(amountToSendBurn)];
+    const transfer = (runtime, type, amountToSend, account, appID, appAccount, assetID) => {
+        const appArgs = [convert.stringToBytes(type),convert.uint64ToBigEndian(amountToSend)];
         runtime.executeTx({
             type: types.TransactionType.CallApp,
             sign: types.SignType.SecretKey,
@@ -141,30 +162,13 @@ describe("Negative Tests", function () {
             appID: appID,
             payFlags: { totalFee: 1000 },
             accounts: [appAccount],
-            foreignAssets: [assets],
-            appArgs: burn,
+            foreignAssets: [assetID],
+            appArgs: appArgs,
         });
     };
     
-
-    const amountToSendTransfer = 110000000;
-    const Testtransfer = (runtime, account, appID, appAccount, assets) => {
-        const transfer = [convert.stringToBytes("transfer"),convert.uint64ToBigEndian(amountToSendTransfer)];
-        runtime.executeTx({
-            type: types.TransactionType.CallApp,
-            sign: types.SignType.SecretKey,
-            fromAccount: account,
-            appID: appID,
-            payFlags: { totalFee: 1000 },
-            accounts: [appAccount],
-            foreignAssets: [assets],
-            appArgs: transfer,
-        });
-    };
-
     
-    const newPrice = 1200000;
-    const updatePrice = (runtime, account, appID) => {
+    const updatePrice = (runtime, account, appID, newPrice) => {
         const updateprice = [convert.stringToBytes("UpdatePrice"),convert.uint64ToBigEndian(newPrice)];
         runtime.executeTx({
             type: types.TransactionType.CallApp,
@@ -175,65 +179,326 @@ describe("Negative Tests", function () {
             appArgs: updateprice,
         });
     };
-
-
-    const createdAsset = () => {
-        const appID1 = appInfoMint.appID;
-
-        //create asset
-        const createAsset = ["create_asset"].map(convert.stringToBytes);
+    
+    const saveAccounts = (runtime, account, appID, holdigsAppAdress,burnAppAdress) => {
+        const save_accounts  = ["save_Adress"].map(convert.stringToBytes);
+        const accounts = [holdigsAppAdress,burnAppAdress];
         runtime.executeTx({
             type: types.TransactionType.CallApp,
             sign: types.SignType.SecretKey,
-            fromAccount: master.account,
-            appID: appID1,
+            fromAccount: account,
+            appID: appID,
             payFlags: { totalFee: 1000 },
-            appArgs: createAsset,
+            accounts: accounts,
+            appArgs: save_accounts,
         });
-
-        //get asset ID
-        const getGlobal = (appID, key) => runtime.getGlobalState(appID, key);
-        const assetID = Number(getGlobal(appID1, "teslaid"));
-        //console.log(assetID);
-
-        return assetID;
+    }
+    
+    const selling = (runtime, account, assetID, appAccount, amountOfAlgo, appID, amountOfAsset) => {
+        const appArgs = [convert.stringToBytes("purchase"),convert.uint64ToBigEndian(amountOfAsset)];
+        runtime.executeTx([{
+            type: types.TransactionType.TransferAlgo,
+            sign: types.SignType.SecretKey,
+            fromAccount: account,
+            toAccountAddr: appAccount,
+            amountMicroAlgos: amountOfAlgo,
+            payFlags: { totalFee: 1000 },
+        },{
+            type: types.TransactionType.CallApp,
+            sign: types.SignType.SecretKey,
+            fromAccount: account,
+            appID: appID,
+            payFlags: { totalFee: 1000 },
+            foreignAssets: [assetID],
+            appArgs: appArgs,
+        }]);
     }
 
-   
+    it("Double asset creation fails", () => {
+        appInfoMint = initMint(runtime,master.account);
+        
+        // create asste 
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
 
-    it("update price fails when called by non-creator" , () => {
-        appInfoMint = initMint();
-        const ID = createdAsset();
-        const appInfoHolding = initHolding(ID);
+        // create asste again
+        assert.throws(() => { const assetID = createAsset(runtime,master.account,appInfoMint.appID) }, RUNTIME_ERR1009);
+    });
 
+    it("Asset creation fails when non-creator calls", () => {
+        appInfoMint = initMint(runtime,master.account);
+        
+        // create asste 
+        assert.throws(() => { const assetID = createAsset(runtime,acc1.account,appInfoMint.appID) }, RUNTIME_ERR1009);
+    });
+
+    it("Asset transfer fails when supply is insufficient" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+
+       // do opt in
+       optIn(runtime, master.account, appInfoHolding.appID, assetID);
+
+        assert.throws(() => { transfer(runtime, 
+            "transfer", 
+            50000000, 
+            master.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+        ) }, RUNTIME_ERR1009);
+    }).timeout(10000);
+
+    it("Asset burn fails when supply is insufficient" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+
+        // do opt in
+        optInBurn(runtime, master.account, appInfoBurn.appID, assetID);
+
+        assert.throws(() => { transfer(runtime, 
+            "burn", 
+            10000000, 
+            master.account,
+            appInfoMint.appID, 
+            appInfoBurn.applicationAccount,
+            assetID
+        ) }, RUNTIME_ERR1009);
+    }).timeout(10000);
+
+    it("Asset transfer fails when non-creator calls" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+
+       // do opt in
+       optIn(runtime, master.account, appInfoHolding.appID, assetID);
+
+        assert.throws(() => { transfer(runtime, 
+            "transfer", 
+            50000000, 
+            acc1.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+        ) }, RUNTIME_ERR1009);
+
+
+    }).timeout(10000);
+
+    it("Asset burn fails when non-creator calls" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+        
+
+        // do opt in
+        optInBurn(runtime, master.account, appInfoBurn.appID, assetID);
+
+        assert.throws(() => { transfer(runtime, 
+            "burn", 
+            10000000, 
+            acc1.account,
+            appInfoMint.appID, 
+            appInfoBurn.applicationAccount,
+            assetID
+        ) }, RUNTIME_ERR1009);
+    }).timeout(10000);
+
+    it("Update price fails when called by non-creator" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const newPrice = 8e6;
         //update price by non creator
-        assert.throws(() => { updatePrice(runtime,user.account,appInfoHolding.appID) }, RUNTIME_ERR1009);
+        assert.throws(() => { updatePrice(runtime,acc1.account,appInfoHolding.appID,newPrice) }, RUNTIME_ERR1009);
     
     }).timeout(10000);
 
-    it("Transfer successfully" , () => {
-        appInfoMint = initMint();
-        const ID = createdAsset();
-        const appInfoHolding = initHolding(ID);
-        optInHolding(runtime, master.account, appInfoHolding.appID, ID);
+    it("Selling token fails when supply < amount sold" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+        // do opt in
+        optIn(runtime, master.account, appInfoHolding.appID, assetID);
+        transfer(runtime, 
+            "transfer", 
+            50, 
+            master.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+            );
+        const amountOfAsset = 100;
+        const amountOfAlgo = 5e6*100;
+        assert.throws(() =>{selling(runtime, acc1.account, assetID, appInfoHolding.applicationAccount,amountOfAlgo, appInfoHolding.appID,amountOfAsset)}, RUNTIME_ERR1009);
+    }).timeout(10000);
 
-        //update prinsferce
-        assert.throws(() => { Testtransfer(runtime,master.account,appInfoMint.appID,appInfoHolding.applicationAccount,ID) }, RUNTIME_ERR1009);
+    it("Selling tokens fails when transaction is not grouped" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+        // do opt in
+        optIn(runtime, master.account, appInfoHolding.appID, assetID);
+        transfer(runtime, 
+            "transfer", 
+            50, 
+            master.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+            );
+        const amountOfAsset = 100;
+        assert.throws(() =>{
+            runtime.executeTx({
+                type: types.TransactionType.CallApp,
+                sign: types.SignType.SecretKey,
+                fromAccount: acc1.account,
+                appID: appInfoHolding.appID,
+                payFlags: { totalFee: 1000 },
+                foreignAssets: [assetID],
+                appArgs: [convert.stringToBytes("selling"),convert.uint64ToBigEndian(amountOfAsset)],
+            })}, RUNTIME_ERR1009);
+         }).timeout(10000);
+
+
+    it("Buying 0 token fails" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+        // do opt in
+        optIn(runtime, master.account, appInfoHolding.appID, assetID);
+        transfer(runtime, 
+            "transfer", 
+            50, 
+            master.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+            );
+        const amountOfAsset = 0;
+        const amountOfAlgo = 5e6*100;
+        assert.throws(() =>{selling(runtime, acc1.account, assetID, appInfoHolding.applicationAccount,amountOfAlgo, appInfoHolding.appID,amountOfAsset)}, RUNTIME_ERR1009);
+    }).timeout(10000);
+
+
+    it("Buying tockens with insufficient algos" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+        // do opt in
+        optIn(runtime, master.account, appInfoHolding.appID, assetID);
+        transfer(runtime, 
+            "transfer", 
+            50, 
+            master.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+            );
+        const amountOfAsset = 100;
+        const amountOfAlgo = 5e6;
+        assert.throws(() =>{selling(runtime, acc1.account, assetID, appInfoHolding.applicationAccount,amountOfAlgo, appInfoHolding.appID,amountOfAsset)}, RUNTIME_ERR1009);
+    }).timeout(10000);
+
+    it("Transfer token to non holding app fails" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+
+       // do opt in
+       optIn(runtime, master.account, appInfoHolding.appID, assetID);
+
+        assert.throws(() => { transfer(runtime, 
+            "transfer", 
+            50000000, 
+            acc1.account,
+            appInfoMint.appID, 
+            appInfoBurn.applicationAccount,
+            assetID
+        ) }, RUNTIME_ERR1009);
 
 
     }).timeout(10000);
 
-    it("Burn successfully" , () => {
-        appInfoMint = initMint();
-        const ID = createdAsset();
-        const appInfoBurn = initBurn();
-        optInBurn(runtime, master.account, appInfoBurn.appID, ID);
+    it("Burn token to non burn app fails" , () => {
+        appInfoMint = initMint(runtime,master.account);
+        const assetID = createAsset(runtime,master.account,appInfoMint.appID);
+        const appInfoBurn = initBurn(runtime,master.account,assetID);
+        const appInfoHolding = initHolding(runtime,master.account,assetID);
+        saveAccounts(runtime,
+            master.account,
+            appInfoMint.appID,
+            appInfoHolding.applicationAccount,
+            appInfoBurn.applicationAccount);
+        
 
-        //update prinsferce
-        assert.throws(() => { Testburn(runtime,master.account,appInfoMint.appID,appInfoBurn.applicationAccount,ID) }, RUNTIME_ERR1009);
+        // do opt in
+        optInBurn(runtime, master.account, appInfoBurn.appID, assetID);
 
-
+        assert.throws(() => { transfer(runtime, 
+            "burn", 
+            10000000, 
+            acc1.account,
+            appInfoMint.appID, 
+            appInfoHolding.applicationAccount,
+            assetID
+        ) }, RUNTIME_ERR1009);
     }).timeout(10000);
-    
 
 });

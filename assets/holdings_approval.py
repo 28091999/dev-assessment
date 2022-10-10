@@ -17,6 +17,7 @@ def holdings_approval():
         Assert(basic_checks),
         App.globalPut(Bytes("assetID"), assetID),
         App.globalPut(Bytes("current_price"), Int(5000000)),
+        App.globalPut(Bytes("optedIN"), Int(0)),
         Return(Int(1))
     ])
 
@@ -28,8 +29,17 @@ def holdings_approval():
         Return(Int(1))
     ])
 
+    senderAssetBalance = AssetHolding.balance(Global.current_application_address(), App.globalGet(Bytes("assetID")))
+    amount = Seq(
+        senderAssetBalance,
+        Assert(senderAssetBalance.hasValue()),
+        senderAssetBalance.value()
+    )
     optin_asset=Seq([
         Assert(basic_checks),
+        Assert(App.globalGet(Bytes("assetID"))==Txn.assets[0]),
+        Assert(Txn.sender() == Global.creator_address()),
+        Assert(App.globalGet(Bytes("optedIN"))==Int(0)), #if th global state of optedIn = 0 he will do the optin else he will not like a boolean (0 or 1 )!!
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.AssetTransfer,
@@ -38,28 +48,27 @@ def holdings_approval():
         TxnField.xfer_asset: Txn.assets[0], # Must be in the assets array sent as part of the application call
         }),
         InnerTxnBuilder.Submit(),
+        App.globalPut(Bytes("optedIN"), Int(1)),
         Return(Int(1))
     ])
 
-    senderAssetBalance = AssetHolding.balance(Global.current_application_address(), App.globalGet(Bytes("assetID")))
-    amount = Seq(
-        senderAssetBalance,
-        Assert(senderAssetBalance.hasValue()),
-        senderAssetBalance.value()
-    )
-    account1SpendableBalance = Balance(Gtxn[1].sender()) - MinBalance(Gtxn[1].sender())
-    amountOftesla = Btoi(Gtxn[2].application_args[1])
+    account1SpendableBalance = Balance(Gtxn[0].sender()) - MinBalance(Gtxn[0].sender())
+    amountOftesla = Btoi(Gtxn[1].application_args[1])
     purchase = Seq([
         Assert(basic_checks),
+        Assert(App.globalGet(Bytes("assetID"))==Txn.assets[0]),
+        Assert(Global.group_size() == Int(2)),
+        Assert(Gtxn[0].type_enum() == TxnType.Payment),
+        Assert(Gtxn[1].type_enum() == TxnType.ApplicationCall),
+        Assert(amountOftesla>Int(0)),
         Assert(amount>=amountOftesla),
-        Assert(amountOftesla<=Int(1000)),
-        Assert(account1SpendableBalance>=App.globalGet(Bytes("current_price"))*amountOftesla),
+        Assert(account1SpendableBalance>=App.globalGet(Bytes("current_price"))*amountOftesla+Int(1000)),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
         TxnField.type_enum: TxnType.AssetTransfer,
-        TxnField.asset_receiver: Gtxn[2].sender(),
+        TxnField.asset_receiver: Gtxn[1].sender(),
         TxnField.asset_amount: amountOftesla,
-        TxnField.xfer_asset: Gtxn[2].assets[0], # Must be in the assets array sent as part of the application call
+        TxnField.xfer_asset: Gtxn[1].assets[0], # Must be in the assets array sent as part of the application call
         }),
         InnerTxnBuilder.Submit(),
         Return(Int(1))
