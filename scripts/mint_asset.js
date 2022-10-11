@@ -16,10 +16,10 @@ async function run(runtimeEnv, deployer) {
         clearStateFile,
         {
             sender: master,
-            localInts: 1,
+            localInts: 0,
             localBytes: 0,
             globalInts: 1,
-            globalBytes: 1,
+            globalBytes: 2,
         },
         { totalFee: 1000 }
     );
@@ -52,15 +52,19 @@ async function run(runtimeEnv, deployer) {
     let globalState = await readAppGlobalState(deployer, master.addr, appID);
     const assetID = globalState.get("teslaid");
 
+    //checkpoint for mint 
+    deployer.addCheckpointKV("mint_appid", appID);
+    deployer.addCheckpointKV("mint_appAdress", app.applicationAccount);
+
     await deployer.deployApp(
         approvalFile1,
         clearStateFile1,
         {
             sender: master,
-            localInts: 2,
-            localBytes: 2,
-            globalInts: 2,
-            globalBytes: 2,
+            localInts: 0,
+            localBytes: 0,
+            globalInts: 3,
+            globalBytes: 0,
             appArgs: [convert.uint64ToBigEndian(assetID)],
         },
         { totalFee: 1000 }
@@ -90,6 +94,10 @@ async function run(runtimeEnv, deployer) {
         appArgs: optinAsset,
     });
 
+    //checkpoint for holding 
+    deployer.addCheckpointKV("holding_appid", appID1);
+    deployer.addCheckpointKV("holding_appAdress", app1.applicationAccount);
+
     await deployer.deployApp(
         approvalFile2,
         clearStateFile2,
@@ -97,8 +105,9 @@ async function run(runtimeEnv, deployer) {
             sender: master,
             localInts: 0,
             localBytes: 0,
-            globalInts: 0,
+            globalInts: 2,
             globalBytes: 0,
+            appArgs: [convert.uint64ToBigEndian(assetID)],
         },
         { totalFee: 1000 }
     );
@@ -126,6 +135,21 @@ async function run(runtimeEnv, deployer) {
         payFlags: { totalFee: 1000 },
         foreignAssets: [assetID],
         appArgs: optinAssetBurn,
+    });
+
+    //checkpoint for burn 
+    deployer.addCheckpointKV("burn_appid", appID2);
+    deployer.addCheckpointKV("burn_appAdress", app2.applicationAccount);
+
+    const save_Adress = ["save_Adress"].map(convert.stringToBytes);
+    await executeTransaction(deployer, {
+        type: types.TransactionType.CallApp,
+        sign: types.SignType.SecretKey,
+        fromAccount: master,
+        appID: appID,
+        payFlags: { totalFee: 1000 },
+        accounts: [app1.applicationAccount,app2.applicationAccount],
+        appArgs: save_Adress,
     });
 
     let appAccountMint = await deployer.algodClient.accountInformation(app.applicationAccount).do();

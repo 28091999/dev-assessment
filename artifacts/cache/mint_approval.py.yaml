@@ -1,8 +1,8 @@
 filename: mint_approval.py
-timestamp: 1661131948
-compiled: BiADAAEEJgEHdGVzbGFpZDEYIhJAAS8xGSMSQAEmMRmBAhJAARwxGSQSQAETMRmBBRJAAQkxGSISQAABADYaAIAMY3JlYXRlX2Fzc2V0EkAApzYaAIAIdHJhbnNmZXISQABSNhoAgARidXJuEkAAAQAxIDIDEjEJMgMSEDEVMgMSEEQxADIJEkQ2GgEXMgooZHAANQE1ADQBRDQADkSxJLIQNhwBshQ2GgEXshI2MACyEbMjQzEgMgMSMQkyAxIQMRUyAxIQRDEAMgkSRDYaARcyCihkcAA1ATUANAFENAAORLEkshA2HAGyFDYaAReyEjYwALIRsyNDMSAyAxIxCTIDEhAxFTIDEhBEKGQiEkSxgQOyEIHAhD2yIiKyI4AEVFNMQbIlgAVUZXNsYbImMgqyKTIKsiuzKLQ8ZyNDIkMiQyNDIkMxIDIDEjEJMgMSEDEVMgMSEEQjQw==
-compiledHash: XZLEUJHWNKGSIN2AFDGDZBLXFMAO2BYQ5VIJPSXAC76OU2OV6JMFJEPSH4
-srcHash: 1270599494
+timestamp: 1665444825
+compiled: BiADAAEEJgMHdGVzbGFpZA5Ib2xkaW5nX2FkcmVzcwtidXJuX2FkcmVzczEYIhJAAYExGSMSQAF4MRmBAhJAAW4xGSQSQAFlMRmBBRJAAVsxGSISQAABADYaAIAMY3JlYXRlX2Fzc2V0EkAA+zYaAIAIdHJhbnNmZXISQACYNhoAgARidXJuEkAAOTYaAIALc2F2ZV9BZHJlc3MSQAABADEgMgMSMQkyAxIQMRUyAxIQRDEAMgkSRCk2HAFnKjYcAmcjQzEgMgMSMQkyAxIQMRUyAxIQRChkNjAAEkQxADIJEkQqZDYcARJENhoBFzIKKGRwADUBNQA0AUQ0AA5EsSSyEDYcAbIUNhoBF7ISNjAAshGzI0MxIDIDEjEJMgMSEDEVMgMSEEQoZDYwABJEMQAyCRJEKWQ2HAESRDYaARcyCihkcAA1ATUANAFENAAORLEkshA2HAGyFDYaAReyEjYwALIRsyNDMSAyAxIxCTIDEhAxFTIDEhBEKGQiEkQxADIJEkSxgQOyEIHAhD2yIiKyI4AEVFNMQbIlgAVUZXNsYbImsyi0PGcjQyJDIkMjQyJDMSAyAxIxCTIDEhAxFTIDEhBEI0M=
+compiledHash: 2C2CT3IRDFUT3CQ4SIEPINJQJBD5NQ6ULZWYFGQHURFJRFEXYR2M4SXOLY
+srcHash: 4113741575
 base64ToBytes:
   - 6
   - 32
@@ -11,7 +11,7 @@ base64ToBytes:
   - 1
   - 4
   - 38
-  - 1
+  - 3
   - 7
   - 116
   - 101
@@ -20,20 +20,47 @@ base64ToBytes:
   - 97
   - 105
   - 100
+  - 14
+  - 72
+  - 111
+  - 108
+  - 100
+  - 105
+  - 110
+  - 103
+  - 95
+  - 97
+  - 100
+  - 114
+  - 101
+  - 115
+  - 115
+  - 11
+  - 98
+  - 117
+  - 114
+  - 110
+  - 95
+  - 97
+  - 100
+  - 114
+  - 101
+  - 115
+  - 115
   - 49
   - 24
   - 34
   - 18
   - 64
   - 1
-  - 47
+  - 129
   - 49
   - 25
   - 35
   - 18
   - 64
   - 1
-  - 38
+  - 120
   - 49
   - 25
   - 129
@@ -41,14 +68,14 @@ base64ToBytes:
   - 18
   - 64
   - 1
-  - 28
+  - 110
   - 49
   - 25
   - 36
   - 18
   - 64
   - 1
-  - 19
+  - 101
   - 49
   - 25
   - 129
@@ -56,7 +83,7 @@ base64ToBytes:
   - 18
   - 64
   - 1
-  - 9
+  - 91
   - 49
   - 25
   - 34
@@ -85,7 +112,7 @@ base64ToBytes:
   - 18
   - 64
   - 0
-  - 167
+  - 251
   - 54
   - 26
   - 0
@@ -102,7 +129,7 @@ base64ToBytes:
   - 18
   - 64
   - 0
-  - 82
+  - 152
   - 54
   - 26
   - 0
@@ -112,6 +139,26 @@ base64ToBytes:
   - 117
   - 114
   - 110
+  - 18
+  - 64
+  - 0
+  - 57
+  - 54
+  - 26
+  - 0
+  - 128
+  - 11
+  - 115
+  - 97
+  - 118
+  - 101
+  - 95
+  - 65
+  - 100
+  - 114
+  - 101
+  - 115
+  - 115
   - 18
   - 64
   - 0
@@ -139,6 +186,56 @@ base64ToBytes:
   - 0
   - 50
   - 9
+  - 18
+  - 68
+  - 41
+  - 54
+  - 28
+  - 1
+  - 103
+  - 42
+  - 54
+  - 28
+  - 2
+  - 103
+  - 35
+  - 67
+  - 49
+  - 32
+  - 50
+  - 3
+  - 18
+  - 49
+  - 9
+  - 50
+  - 3
+  - 18
+  - 16
+  - 49
+  - 21
+  - 50
+  - 3
+  - 18
+  - 16
+  - 68
+  - 40
+  - 100
+  - 54
+  - 48
+  - 0
+  - 18
+  - 68
+  - 49
+  - 0
+  - 50
+  - 9
+  - 18
+  - 68
+  - 42
+  - 100
+  - 54
+  - 28
+  - 1
   - 18
   - 68
   - 54
@@ -203,10 +300,24 @@ base64ToBytes:
   - 18
   - 16
   - 68
+  - 40
+  - 100
+  - 54
+  - 48
+  - 0
+  - 18
+  - 68
   - 49
   - 0
   - 50
   - 9
+  - 18
+  - 68
+  - 41
+  - 100
+  - 54
+  - 28
+  - 1
   - 18
   - 68
   - 54
@@ -274,6 +385,12 @@ base64ToBytes:
   - 40
   - 100
   - 34
+  - 18
+  - 68
+  - 49
+  - 0
+  - 50
+  - 9
   - 18
   - 68
   - 177
@@ -307,14 +424,6 @@ base64ToBytes:
   - 97
   - 178
   - 38
-  - 50
-  - 10
-  - 178
-  - 41
-  - 50
-  - 10
-  - 178
-  - 43
   - 179
   - 40
   - 180
@@ -358,7 +467,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l18\r
+  bnz main_l20\r
 
   txn OnCompletion\r
 
@@ -366,7 +475,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l17\r
+  bnz main_l19\r
 
   txn OnCompletion\r
 
@@ -374,7 +483,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l16\r
+  bnz main_l18\r
 
   txn OnCompletion\r
 
@@ -382,7 +491,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l15\r
+  bnz main_l17\r
 
   txn OnCompletion\r
 
@@ -390,7 +499,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l14\r
+  bnz main_l16\r
 
   txn OnCompletion\r
 
@@ -410,7 +519,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l13\r
+  bnz main_l15\r
 
   txna ApplicationArgs 0\r
 
@@ -418,7 +527,7 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l12\r
+  bnz main_l14\r
 
   txna ApplicationArgs 0\r
 
@@ -426,95 +535,17 @@ tealCode: "#pragma version 6\r
 
   ==\r
 
-  bnz main_l11\r
+  bnz main_l13\r
+
+  txna ApplicationArgs 0\r
+
+  byte \"save_Adress\"\r
+
+  ==\r
+
+  bnz main_l12\r
 
   err\r
-
-  main_l11:\r
-
-  txn RekeyTo\r
-
-  global ZeroAddress\r
-
-  ==\r
-
-  txn CloseRemainderTo\r
-
-  global ZeroAddress\r
-
-  ==\r
-
-  &&\r
-
-  txn AssetCloseTo\r
-
-  global ZeroAddress\r
-
-  ==\r
-
-  &&\r
-
-  assert\r
-
-  txn Sender\r
-
-  global CreatorAddress\r
-
-  ==\r
-
-  assert\r
-
-  txna ApplicationArgs 1\r
-
-  btoi\r
-
-  global CurrentApplicationAddress\r
-
-  byte \"teslaid\"\r
-
-  app_global_get\r
-
-  asset_holding_get AssetBalance\r
-
-  store 1\r
-
-  store 0\r
-
-  load 1\r
-
-  assert\r
-
-  load 0\r
-
-  <=\r
-
-  assert\r
-
-  itxn_begin\r
-
-  int axfer\r
-
-  itxn_field TypeEnum\r
-
-  txna Accounts 1\r
-
-  itxn_field AssetReceiver\r
-
-  txna ApplicationArgs 1\r
-
-  btoi\r
-
-  itxn_field AssetAmount\r
-
-  txna Assets 0\r
-
-  itxn_field XferAsset\r
-
-  itxn_submit\r
-
-  int 1\r
-
-  return\r
 
   main_l12:\r
 
@@ -550,6 +581,76 @@ tealCode: "#pragma version 6\r
 
   assert\r
 
+  byte \"Holding_adress\"\r
+
+  txna Accounts 1\r
+
+  app_global_put\r
+
+  byte \"burn_adress\"\r
+
+  txna Accounts 2\r
+
+  app_global_put\r
+
+  int 1\r
+
+  return\r
+
+  main_l13:\r
+
+  txn RekeyTo\r
+
+  global ZeroAddress\r
+
+  ==\r
+
+  txn CloseRemainderTo\r
+
+  global ZeroAddress\r
+
+  ==\r
+
+  &&\r
+
+  txn AssetCloseTo\r
+
+  global ZeroAddress\r
+
+  ==\r
+
+  &&\r
+
+  assert\r
+
+  byte \"teslaid\"\r
+
+  app_global_get\r
+
+  txna Assets 0\r
+
+  ==\r
+
+  assert\r
+
+  txn Sender\r
+
+  global CreatorAddress\r
+
+  ==\r
+
+  assert\r
+
+  byte \"burn_adress\"\r
+
+  app_global_get\r
+
+  txna Accounts 1\r
+
+  ==\r
+
+  assert\r
+
   txna ApplicationArgs 1\r
 
   btoi\r
@@ -602,7 +703,113 @@ tealCode: "#pragma version 6\r
 
   return\r
 
-  main_l13:\r
+  main_l14:\r
+
+  txn RekeyTo\r
+
+  global ZeroAddress\r
+
+  ==\r
+
+  txn CloseRemainderTo\r
+
+  global ZeroAddress\r
+
+  ==\r
+
+  &&\r
+
+  txn AssetCloseTo\r
+
+  global ZeroAddress\r
+
+  ==\r
+
+  &&\r
+
+  assert\r
+
+  byte \"teslaid\"\r
+
+  app_global_get\r
+
+  txna Assets 0\r
+
+  ==\r
+
+  assert\r
+
+  txn Sender\r
+
+  global CreatorAddress\r
+
+  ==\r
+
+  assert\r
+
+  byte \"Holding_adress\"\r
+
+  app_global_get\r
+
+  txna Accounts 1\r
+
+  ==\r
+
+  assert\r
+
+  txna ApplicationArgs 1\r
+
+  btoi\r
+
+  global CurrentApplicationAddress\r
+
+  byte \"teslaid\"\r
+
+  app_global_get\r
+
+  asset_holding_get AssetBalance\r
+
+  store 1\r
+
+  store 0\r
+
+  load 1\r
+
+  assert\r
+
+  load 0\r
+
+  <=\r
+
+  assert\r
+
+  itxn_begin\r
+
+  int axfer\r
+
+  itxn_field TypeEnum\r
+
+  txna Accounts 1\r
+
+  itxn_field AssetReceiver\r
+
+  txna ApplicationArgs 1\r
+
+  btoi\r
+
+  itxn_field AssetAmount\r
+
+  txna Assets 0\r
+
+  itxn_field XferAsset\r
+
+  itxn_submit\r
+
+  int 1\r
+
+  return\r
+
+  main_l15:\r
 
   txn RekeyTo\r
 
@@ -638,6 +845,14 @@ tealCode: "#pragma version 6\r
 
   assert\r
 
+  txn Sender\r
+
+  global CreatorAddress\r
+
+  ==\r
+
+  assert\r
+
   itxn_begin\r
 
   int acfg\r
@@ -660,14 +875,6 @@ tealCode: "#pragma version 6\r
 
   itxn_field ConfigAssetName\r
 
-  global CurrentApplicationAddress\r
-
-  itxn_field ConfigAssetManager\r
-
-  global CurrentApplicationAddress\r
-
-  itxn_field ConfigAssetFreeze\r
-
   itxn_submit\r
 
   byte \"teslaid\"\r
@@ -680,21 +887,9 @@ tealCode: "#pragma version 6\r
 
   return\r
 
-  main_l14:\r
-
-  int 0\r
-
-  return\r
-
-  main_l15:\r
-
-  int 0\r
-
-  return\r
-
   main_l16:\r
 
-  int 1\r
+  int 0\r
 
   return\r
 
@@ -705,6 +900,18 @@ tealCode: "#pragma version 6\r
   return\r
 
   main_l18:\r
+
+  int 1\r
+
+  return\r
+
+  main_l19:\r
+
+  int 0\r
+
+  return\r
+
+  main_l20:\r
 
   txn RekeyTo\r
 

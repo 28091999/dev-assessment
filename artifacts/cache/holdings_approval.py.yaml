@@ -1,17 +1,26 @@
 filename: holdings_approval.py
-timestamp: 1661131976
-compiled: BiADAQAEJgINY3VycmVudF9wcmljZQdhc3NldElEMRgjEkABETEZIhJAAQIxGYECEkAA+DEZJBJAAO8xGYEFEkAA5TEZIxJAAAEANhoAgAtvcHRpbl9hc3NldBJAAKQ2GgCAC1VwZGF0ZVByaWNlEkAAcDYaAIAIcHVyY2hhc2USQAABADEgMgMSMQkyAxIQMRUyAxIQRDIKKWRwADUBNQA0AUQ0ADcCGgEXD0Q3AhoBF4HoBw5EMwEAYDMBAHgJKGQ3AhoBFwsPRLEkshAzAgCyFDcCGgEXshI3AjAAshGzIkMxIDIDEjEJMgMSEDEVMgMSEEQxADIJEkQoNhoBF2ciQzEgMgMSMQkyAxIQMRUyAxIQRLEkshAyCrIUI7ISNjAAshGzIkMjQyNDIkMxADEYYUQiQzEgMgMSMQkyAxIQMRUyAxIQRCk2GgAXZyiBwJaxAmciQw==
-compiledHash: YTQL2D6QBIZXEOLNWBXNQQ67IBQD57BC5PM4774TAKY7QIBB2XSSEB6EGE
-srcHash: 2525305666
+timestamp: 1665444848
+compiled: BiAEAQAEAiYDB2Fzc2V0SUQNY3VycmVudF9wcmljZQdvcHRlZElOMRgjEkABQDEZIhJAATExGSUSQAEoMRkkEkABHzEZgQUSQAEVMRkjEkAAAQA2GgCAC29wdGluX2Fzc2V0EkAAvzYaAIALVXBkYXRlUHJpY2USQACLNhoAgAhwdXJjaGFzZRJAAAEAMSAyAxIxCTIDEhAxFTIDEhBEKGQ2MAASRDIEJRJEMwAQIhJEMwEQgQYSRDcBGgEXIw1EMgooZHAANQE1ADQBRDQANwEaARcPRDMAAGAzAAB4CSlkNwEaARcLgegHCA9EsSSyEDMBALIUNwEaAReyEjcBMACyEbMiQzEgMgMSMQkyAxIQMRUyAxIQRDEAMgkSRCk2GgEXZyJDMSAyAxIxCTIDEhAxFTIDEhBEKGQ2MAASRDEAMgkSRCpkIxJEsSSyEDIKshQjshI2MACyEbMqImciQyNDI0MiQzEAMRhhRCJDMSAyAxIxCTIDEhAxFTIDEhBEKDYaABdnKYHAlrECZyojZyJD
+compiledHash: THIOKZFOXJVUJW5IC7XLRJ6WL5ENYZVUZBHOI2NKYY5ANHGHC5BF4EX7SA
+srcHash: 2805780090
 base64ToBytes:
     - 6
     - 32
-    - 3
+    - 4
     - 1
     - 0
     - 4
-    - 38
     - 2
+    - 38
+    - 3
+    - 7
+    - 97
+    - 115
+    - 115
+    - 101
+    - 116
+    - 73
+    - 68
     - 13
     - 99
     - 117
@@ -27,50 +36,49 @@ base64ToBytes:
     - 99
     - 101
     - 7
-    - 97
-    - 115
-    - 115
-    - 101
+    - 111
+    - 112
     - 116
+    - 101
+    - 100
     - 73
-    - 68
+    - 78
     - 49
     - 24
     - 35
     - 18
     - 64
     - 1
-    - 17
+    - 64
     - 49
     - 25
     - 34
     - 18
     - 64
     - 1
-    - 2
+    - 49
     - 49
     - 25
-    - 129
-    - 2
+    - 37
     - 18
     - 64
-    - 0
-    - 248
+    - 1
+    - 40
     - 49
     - 25
     - 36
     - 18
     - 64
-    - 0
-    - 239
+    - 1
+    - 31
     - 49
     - 25
     - 129
     - 5
     - 18
     - 64
-    - 0
-    - 229
+    - 1
+    - 21
     - 49
     - 25
     - 35
@@ -98,7 +106,7 @@ base64ToBytes:
     - 18
     - 64
     - 0
-    - 164
+    - 191
     - 54
     - 26
     - 0
@@ -118,7 +126,7 @@ base64ToBytes:
     - 18
     - 64
     - 0
-    - 112
+    - 139
     - 54
     - 26
     - 0
@@ -155,9 +163,42 @@ base64ToBytes:
     - 18
     - 16
     - 68
+    - 40
+    - 100
+    - 54
+    - 48
+    - 0
+    - 18
+    - 68
+    - 50
+    - 4
+    - 37
+    - 18
+    - 68
+    - 51
+    - 0
+    - 16
+    - 34
+    - 18
+    - 68
+    - 51
+    - 1
+    - 16
+    - 129
+    - 6
+    - 18
+    - 68
+    - 55
+    - 1
+    - 26
+    - 1
+    - 23
+    - 35
+    - 13
+    - 68
     - 50
     - 10
-    - 41
+    - 40
     - 100
     - 112
     - 0
@@ -171,39 +212,33 @@ base64ToBytes:
     - 52
     - 0
     - 55
-    - 2
+    - 1
     - 26
     - 1
     - 23
     - 15
     - 68
-    - 55
-    - 2
-    - 26
-    - 1
-    - 23
-    - 129
-    - 232
-    - 7
-    - 14
-    - 68
     - 51
-    - 1
+    - 0
     - 0
     - 96
     - 51
-    - 1
+    - 0
     - 0
     - 120
     - 9
-    - 40
+    - 41
     - 100
     - 55
-    - 2
+    - 1
     - 26
     - 1
     - 23
     - 11
+    - 129
+    - 232
+    - 7
+    - 8
     - 15
     - 68
     - 177
@@ -211,19 +246,19 @@ base64ToBytes:
     - 178
     - 16
     - 51
-    - 2
+    - 1
     - 0
     - 178
     - 20
     - 55
-    - 2
+    - 1
     - 26
     - 1
     - 23
     - 178
     - 18
     - 55
-    - 2
+    - 1
     - 48
     - 0
     - 178
@@ -255,7 +290,7 @@ base64ToBytes:
     - 9
     - 18
     - 68
-    - 40
+    - 41
     - 54
     - 26
     - 1
@@ -281,6 +316,24 @@ base64ToBytes:
     - 18
     - 16
     - 68
+    - 40
+    - 100
+    - 54
+    - 48
+    - 0
+    - 18
+    - 68
+    - 49
+    - 0
+    - 50
+    - 9
+    - 18
+    - 68
+    - 42
+    - 100
+    - 35
+    - 18
+    - 68
     - 177
     - 36
     - 178
@@ -298,6 +351,9 @@ base64ToBytes:
     - 178
     - 17
     - 179
+    - 42
+    - 34
+    - 103
     - 34
     - 67
     - 35
@@ -332,18 +388,21 @@ base64ToBytes:
     - 18
     - 16
     - 68
-    - 41
+    - 40
     - 54
     - 26
     - 0
     - 23
     - 103
-    - 40
+    - 41
     - 129
     - 192
     - 150
     - 177
     - 2
+    - 103
+    - 42
+    - 35
     - 103
     - 34
     - 67
@@ -453,6 +512,50 @@ tealCode: "#pragma version 6\r
 
     assert\r
 
+    byte \"assetID\"\r
+
+    app_global_get\r
+
+    txna Assets 0\r
+
+    ==\r
+
+    assert\r
+
+    global GroupSize\r
+
+    int 2\r
+
+    ==\r
+
+    assert\r
+
+    gtxn 0 TypeEnum\r
+
+    int pay\r
+
+    ==\r
+
+    assert\r
+
+    gtxn 1 TypeEnum\r
+
+    int appl\r
+
+    ==\r
+
+    assert\r
+
+    gtxna 1 ApplicationArgs 1\r
+
+    btoi\r
+
+    int 0\r
+
+    >\r
+
+    assert\r
+
     global CurrentApplicationAddress\r
 
     byte \"assetID\"\r
@@ -471,7 +574,7 @@ tealCode: "#pragma version 6\r
 
     load 0\r
 
-    gtxna 2 ApplicationArgs 1\r
+    gtxna 1 ApplicationArgs 1\r
 
     btoi\r
 
@@ -479,21 +582,11 @@ tealCode: "#pragma version 6\r
 
     assert\r
 
-    gtxna 2 ApplicationArgs 1\r
-
-    btoi\r
-
-    int 1000\r
-
-    <=\r
-
-    assert\r
-
-    gtxn 1 Sender\r
+    gtxn 0 Sender\r
 
     balance\r
 
-    gtxn 1 Sender\r
+    gtxn 0 Sender\r
 
     min_balance\r
 
@@ -503,11 +596,15 @@ tealCode: "#pragma version 6\r
 
     app_global_get\r
 
-    gtxna 2 ApplicationArgs 1\r
+    gtxna 1 ApplicationArgs 1\r
 
     btoi\r
 
     *\r
+
+    int 1000\r
+
+    +\r
 
     >=\r
 
@@ -519,17 +616,17 @@ tealCode: "#pragma version 6\r
 
     itxn_field TypeEnum\r
 
-    gtxn 2 Sender\r
+    gtxn 1 Sender\r
 
     itxn_field AssetReceiver\r
 
-    gtxna 2 ApplicationArgs 1\r
+    gtxna 1 ApplicationArgs 1\r
 
     btoi\r
 
     itxn_field AssetAmount\r
 
-    gtxna 2 Assets 0\r
+    gtxna 1 Assets 0\r
 
     itxn_field XferAsset\r
 
@@ -611,6 +708,34 @@ tealCode: "#pragma version 6\r
 
     assert\r
 
+    byte \"assetID\"\r
+
+    app_global_get\r
+
+    txna Assets 0\r
+
+    ==\r
+
+    assert\r
+
+    txn Sender\r
+
+    global CreatorAddress\r
+
+    ==\r
+
+    assert\r
+
+    byte \"optedIN\"\r
+
+    app_global_get\r
+
+    int 0\r
+
+    ==\r
+
+    assert\r
+
     itxn_begin\r
 
     int axfer\r
@@ -630,6 +755,12 @@ tealCode: "#pragma version 6\r
     itxn_field XferAsset\r
 
     itxn_submit\r
+
+    byte \"optedIN\"\r
+
+    int 1\r
+
+    app_global_put\r
 
     int 1\r
 
@@ -704,6 +835,12 @@ tealCode: "#pragma version 6\r
     byte \"current_price\"\r
 
     int 5000000\r
+
+    app_global_put\r
+
+    byte \"optedIN\"\r
+
+    int 0\r
 
     app_global_put\r
 

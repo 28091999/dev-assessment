@@ -15,6 +15,7 @@ def mint_approval():
     create_asset = Seq(
         Assert(basic_checks),
         Assert(App.globalGet(Bytes("teslaid"))==Int(0)),
+        Assert(Txn.sender() == Global.creator_address()),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
             TxnField.type_enum: TxnType.AssetConfig,
@@ -22,8 +23,6 @@ def mint_approval():
             TxnField.config_asset_decimals: Int(0),
             TxnField.config_asset_unit_name: Bytes("TSLA"),
             TxnField.config_asset_name: Bytes("Tesla"),
-            TxnField.config_asset_manager: Global.current_application_address(),
-            TxnField.config_asset_freeze: Global.current_application_address(),
         }),
         InnerTxnBuilder.Submit(),
         App.globalPut(Bytes("teslaid"), InnerTxn.created_asset_id()),
@@ -45,7 +44,9 @@ def mint_approval():
     )
     asset_transfer_holding = Seq([
         Assert(basic_checks),
+        Assert(App.globalGet(Bytes("teslaid"))==Txn.assets[0]),
         Assert(Txn.sender() == Global.creator_address()), # creator only function
+        Assert(App.globalGet(Bytes("Holding_adress"))==Txn.accounts[1]),
         Assert(amountToSendForTransfer <= amount),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
@@ -61,7 +62,9 @@ def mint_approval():
     amountToSendForTransfer1 = Btoi(Txn.application_args[1])
     asset_transfer_burn = Seq([
         Assert(basic_checks),
-        Assert(Txn.sender() == Global.creator_address()), # creator only function
+        Assert(App.globalGet(Bytes("teslaid"))==Txn.assets[0]),
+        Assert(Txn.sender() == Global.creator_address()), # creator only 
+        Assert(App.globalGet(Bytes("burn_adress"))==Txn.accounts[1]),
         Assert(amountToSendForTransfer1 <= amount),
         InnerTxnBuilder.Begin(),
         InnerTxnBuilder.SetFields({
@@ -74,6 +77,15 @@ def mint_approval():
         Return(Int(1))
     ])
 
+    save_Adress = Seq([
+        Assert(basic_checks),
+        Assert(Txn.sender() == Global.creator_address()), # creator only function
+        App.globalPut(Bytes("Holding_adress"), Txn.accounts[1]),
+        App.globalPut(Bytes("burn_adress"),Txn.accounts[2]),
+        Return(Int(1))
+    ])
+
+
     handle_optin = Return(Int(0))
 
     handle_noop = Seq(
@@ -81,6 +93,7 @@ def mint_approval():
             [Txn.application_args[0] == Bytes("create_asset"), create_asset],
             [Txn.application_args[0] == Bytes("transfer"), asset_transfer_holding],
             [Txn.application_args[0] == Bytes("burn"), asset_transfer_burn],
+            [Txn.application_args[0] == Bytes("save_Adress"), save_Adress],
         )
     )
     handle_closeout = Return(Int(1))

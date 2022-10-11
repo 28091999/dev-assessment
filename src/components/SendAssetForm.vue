@@ -51,16 +51,22 @@ export default {
             asset_left: 0,
             asset_amount: 0,
             explorerURL: "",
+            algodClient: null,
+            holdingsAppAddress: null,
+            holdingsAppID: null,
         };
     },
     created(){
+        this.algodClient = getAlgodClient("Localhost");
+        const holdingsApp = configHolding.default.metadata;
+        this.holdingsAppAddress = holdingsApp.holding_appAdress;
+        this.holdingsAppID = holdingsApp.holding_appid;
         this.amountTesla();
     },
     methods: {
         
         async amountTesla(){
-            const algodClient = getAlgodClient("Localhost");
-            let applicationInfoResponse1 = await algodClient.accountInformation(configHolding.default.ssc.holdings_approval.applicationAccount).do();
+            let applicationInfoResponse1 = await this.algodClient.accountInformation(this.holdingsAppAddress).do();
             this.asset_left=applicationInfoResponse1.assets[0].amount;
         },
 
@@ -71,59 +77,58 @@ export default {
         async handleBuyAsset() {
             // write code here
             this.amountTesla();
-            const algodClient = getAlgodClient("Localhost");
             let userAccount = algosdk.mnemonicToSecretKey(process.env.VUE_APP_ACC1_MNEMONIC);
             let sender = userAccount.addr;
 
-            let params = await algodClient.getTransactionParams().do();
+            let params = await this.algodClient.getTransactionParams().do();
             params.fee = 1000
             params.flatFee = true
 
-            const index= configHolding.default.ssc.holdings_approval.appID;
+            const senderInfo = await this.algodClient.accountInformation(sender).do();
 
-            //OptIn the app
-           // let txnforOptin = algosdk.makeApplicationOptInTxn(sender, params, index);
+            let applicationInfoResponse = await this.algodClient.getApplicationByID(this.holdingsAppID).do();
 
-            //await wallets.sendAlgoSignerTransaction(txnforOptin, algodClient); 
+            for(let i=0; i<=senderInfo.assets.length; i++){
+                
+                if(typeof senderInfo.assets[i] === 'undefined' || (senderInfo.assets[i]['asset-id'] !== applicationInfoResponse['params']['global-state'][0].value.uint && i === senderInfo.assets.length -1)){
+                    
+                    let txn1 = algosdk.makeAssetTransferTxnWithSuggestedParams(
+                        sender,
+                        sender,
+                        undefined,
+                        undefined,
+                        0,
+                        undefined,
+                        applicationInfoResponse['params']['global-state'][0].value.uint,
+                        params
+                    );
+                    await wallets.sendAlgoSignerTransaction([txn1], this.algodClient);
+                    break;
+                }
 
-            let applicationInfoResponse = await algodClient.getApplicationByID(index).do();
-            
-            let txn1 = algosdk.makeAssetTransferTxnWithSuggestedParams(
-                sender,
-                sender,
-                undefined,
-                undefined,
-                0,
-                undefined,
-                applicationInfoResponse['params']['global-state'][0].value.uint,
-                params
-            );
+                else if(senderInfo.assets[i]['asset-id'] === applicationInfoResponse['params']['global-state'][0].value.uint){
+                    break;
+                }
+            }
 
-            let txn2 = algosdk.makePaymentTxnWithSuggestedParams(sender, configHolding.default.ssc.holdings_approval.applicationAccount, applicationInfoResponse['params']['global-state'][1].value.uint*this.asset_amount, undefined, undefined, params);
+            let txn2 = algosdk.makePaymentTxnWithSuggestedParams(sender, this.holdingsAppAddress, applicationInfoResponse['params']['global-state'][1].value.uint*this.asset_amount, undefined, undefined, params);
 
-            const big0 = window.btoa('purchase'); 
-            var bytes = [];
-            var x=this.asset_amount;
-                var i = 8;
-                do {
-                bytes[--i] = x & (255);
-                x = x>>8;
-                } while ( i );
+            let appArgs = [new Uint8Array(Buffer.from("purchase")), algosdk.encodeUint64(Number(this.asset_amount))];
 
-            let appArgs = [];
-
-            appArgs.push(new Uint8Array(Buffer.from(big0, "base64")));
-            appArgs.push(new Uint8Array(Buffer.from(bytes, "base64")));
-
-            let txn3 = algosdk.makeApplicationNoOpTxn(sender, params, index,appArgs,undefined,undefined,[applicationInfoResponse['params']['global-state'][0].value.uint]);
+            let txn3 = algosdk.makeApplicationNoOpTxn(sender, params, this.holdingsAppID,appArgs,undefined,undefined,[applicationInfoResponse['params']['global-state'][0].value.uint]);
             // Store txns
-            let txns = [txn1, txn2, txn3];
+            let txns = [txn2, txn3];
 
             // Assign group ID
             algosdk.assignGroupID(txns);
 
-            await wallets.sendAlgoSignerTransaction(txns, algodClient);
+            let Txn = await wallets.sendAlgoSignerTransaction(txns, this.algodClient);
+
             this.amountTesla();
+            
+            if(Txn)
+                this.updateTxn(Txn.txId);
+                
 },
     },
 };

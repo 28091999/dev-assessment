@@ -8,25 +8,13 @@ const sendAlgoSignerTransaction = async (txns, algodClient) => {
     const AlgoSigner = window.AlgoSigner;
 
     if (typeof AlgoSigner !== "undefined") {
-        // write your code here
         try {
-            // Get the binary and base64 encode it
-            let binaryTxs = [txns[0].toByte(), txns[1].toByte(), txns[2].toByte()];
+            const binaryTxs = txns.map(txn => {return txn.toByte()});
             let base64Txs = binaryTxs.map((binary) => AlgoSigner.encoding.msgpackToBase64(binary));
 
-            let signedTxs = await AlgoSigner.signTxn([
-                {
-                    txn: base64Txs[0],
-                },
-                {
-                    txn: base64Txs[1],
-                },
-                {
-                    txn: base64Txs[2],
-                },
-            ]);
-
-            // Get the base64 encoded signed transaction and convert it to binary
+            const tabTxns = base64Txs.map(txn => {return {txn: txn}});
+            let signedTxs = await AlgoSigner.signTxn(tabTxns);
+            
             let binarySignedTxs = signedTxs.map((tx) => AlgoSigner.encoding.base64ToMsgpack(
                 tx.blob
             ));
@@ -38,10 +26,12 @@ const sendAlgoSignerTransaction = async (txns, algodClient) => {
 
             return response;
         } catch (err) {
+            alert(err);
             console.error(err);
         }
     }
 };
+
 
 const sendWalletConnectTransaction = async (connector, txn, algodClient) => {
     try {
@@ -103,5 +93,5 @@ const sendMyAlgoTransaction = async (txn, algodClient) => {
 export default {
     sendWalletConnectTransaction,
     sendMyAlgoTransaction,
-    sendAlgoSignerTransaction
+    sendAlgoSignerTransaction,
 };
